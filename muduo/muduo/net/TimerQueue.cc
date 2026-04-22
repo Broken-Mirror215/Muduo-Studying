@@ -113,6 +113,7 @@ TimerQueue::~TimerQueue()
   }
 }
 
+//这是许多定时器接口的根基。跨线程使用的超时处理函数，为了安全,muduo统一放到了IO线程当中
 TimerId TimerQueue::addTimer(TimerCallback cb,
                              Timestamp when,
                              double interval)
@@ -180,6 +181,8 @@ void TimerQueue::handleRead()
   reset(expired, now);
 }
 
+
+//这里有用户回调功能。
 std::vector<TimerQueue::Entry> TimerQueue::getExpired(Timestamp now)
 {
   assert(timers_.size() == activeTimers_.size());

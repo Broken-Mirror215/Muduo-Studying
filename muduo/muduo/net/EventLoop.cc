@@ -100,6 +100,7 @@ EventLoop::~EventLoop()
   t_loopInThisThread = NULL;
 }
 
+//这个函数在构造的时候会启动很多功能
 void EventLoop::loop()
 {
   assert(!looping_);
@@ -108,6 +109,7 @@ void EventLoop::loop()
   quit_ = false;  // FIXME: what if someone calls quit() before loop() ?
   LOG_TRACE << "EventLoop " << this << " start looping";
 
+  //事件循环功能
   while (!quit_)
   {
     activeChannels_.clear();

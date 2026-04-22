@@ -38,6 +38,7 @@ class Poller : noncopyable
 
   /// Polls the I/O events.
   /// Must be called in the loop thread.
+  //这个是关键的函数，使用poll(2)获得当前活动的IO的事件，然后填充调用方传入的这个activechannels
   virtual Timestamp poll(int timeoutMs, ChannelList* activeChannels) = 0;
 
   /// Changes the interested I/O events.
