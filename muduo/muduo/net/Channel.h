@@ -60,11 +60,16 @@ class Channel : noncopyable
   // int revents() const { return revents_; }
   bool isNoneEvent() const { return events_ == kNoneEvent; }
 
+  //!!! 注册/监听事件step1 channel把事件放到events里面，然后update->loop
+  //这位标记其实是同时关注读写，用位掩码的方式。
   void enableReading() { events_ |= kReadEvent; update(); }
   void disableReading() { events_ &= ~kReadEvent; update(); }
   void enableWriting() { events_ |= kWriteEvent; update(); }
   void disableWriting() { events_ &= ~kWriteEvent; update(); }
   void disableAll() { events_ = kNoneEvent; update(); }
+  //所以上面的函数就是对fd->channel->eventpoller->poller->系统把fd注册进去了
+
+
   bool isWriting() const { return events_ & kWriteEvent; }
   bool isReading() const { return events_ & kReadEvent; }
 
@@ -93,7 +98,7 @@ class Channel : noncopyable
   static const int kWriteEvent;
 
   EventLoop* loop_;
-  const int  fd_;
+  const int  fd_;//注册一个监听fd
   int        events_;
   //目前的活动事件，由Eventloop/poller设置的。
   int        revents_; // it's the received event types of epoll or poll

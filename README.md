@@ -39,3 +39,7 @@ IO线程不一定是主线程，任何一个线程都可以有Eventloop，一个
 在新连接来的时候，Acceptor会回调newConnection，其创建了conn，在回调。
 ### TcpConnection Class
 这个类的状态只有两个，一个是kConnecting和kConnected。首先他会使用Channel来获得socket上的IO事件。仔细看他的构造函数的参数用的是已经accepted的fd。这是Tcpconnection建立连接的方式。然后我们看断开连接的方式，在muduo中只有一种被动关闭连接的方式，就是对方先关闭，然后服务器端read(2)了返回0。tcpconnection中也有使用buffer作为输入缓冲来的。使用Tcpconnection发送数据的。
+---
+在注册监听事件的时候我们走的是fd->channel->Eventpoller->poller->epoll系统。
+在事件发生的时候我们又走了epoll->poller->Eventloop->channel
+

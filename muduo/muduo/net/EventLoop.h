@@ -28,9 +28,9 @@ namespace muduo
 namespace net
 {
 
-class Channel;
-class Poller;
-class TimerQueue;
+class Channel;//已经封装好的IO处理类
+class Poller;//我这次会选用epoller来做，这个彻底废掉
+class TimerQueue;//这个是超时处理，可以用。
 
 ///
 /// Reactor, at most one per thread.
@@ -39,7 +39,7 @@ class TimerQueue;
 class EventLoop : noncopyable
 {
  public:
-  typedef std::function<void()> Functor;
+  typedef std::function<void()> Functor;//这个注册的回调函数要在哪用？
 
   EventLoop();
   ~EventLoop();  // force out-line dtor, for std::unique_ptr members.
@@ -64,6 +64,8 @@ class EventLoop : noncopyable
 
   int64_t iteration() const { return iteration_; }
 
+
+  //这个能怎么用？
   /// Runs callback immediately in the loop thread.
   /// It wakes up the loop, and run the cb.
   /// If in the same loop thread, cb is run within the function.

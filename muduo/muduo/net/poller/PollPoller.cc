@@ -72,6 +72,7 @@ void PollPoller::fillActiveChannels(int numEvents,
   }
 }
 
+//这一步是loop来调用这个channel
 void PollPoller::updateChannel(Channel* channel)
 {
   Poller::assertInLoopThread();

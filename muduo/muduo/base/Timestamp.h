@@ -8,7 +8,6 @@
 
 #include "muduo/base/copyable.h"
 #include "muduo/base/Types.h"
-
 #include <boost/operators.hpp>
 
 namespace muduo

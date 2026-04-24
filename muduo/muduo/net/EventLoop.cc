@@ -69,7 +69,7 @@ EventLoop::EventLoop()
     iteration_(0),
     threadId_(CurrentThread::tid()),
     poller_(Poller::newDefaultPoller(this)),
-    timerQueue_(new TimerQueue(this)),
+    timerQueue_(new TimerQueue(this)),//时间队列。
     wakeupFd_(createEventfd()),
     wakeupChannel_(new Channel(this, wakeupFd_)),
     currentActiveChannel_(NULL)
@@ -82,8 +82,11 @@ EventLoop::EventLoop()
   }
   else
   {
+    //这是记录哪个线程有的eventloop的吗？
     t_loopInThisThread = this;
   }
+
+  //这里是唤醒管道？为什么要这样唤醒？
   wakeupChannel_->setReadCallback(
       std::bind(&EventLoop::handleRead, this));
   // we are always reading the wakeupfd
@@ -94,6 +97,7 @@ EventLoop::~EventLoop()
 {
   LOG_DEBUG << "EventLoop " << this << " of thread " << threadId_
             << " destructs in thread " << CurrentThread::tid();
+  //管道和eventloop一起开始一起结束的吗
   wakeupChannel_->disableAll();
   wakeupChannel_->remove();
   ::close(wakeupFd_);
@@ -200,6 +204,7 @@ void EventLoop::cancel(TimerId timerId)
   return timerQueue_->cancel(timerId);
 }
 
+//在channel之后，loop更新了channel
 void EventLoop::updateChannel(Channel* channel)
 {
   assert(channel->ownerLoop() == this);

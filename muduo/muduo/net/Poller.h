@@ -38,6 +38,7 @@ class Poller : noncopyable
 
   /// Polls the I/O events.
   /// Must be called in the loop thread.
+  //但是这几个基类为什么是虚函数？
   //这个是关键的函数，使用poll(2)获得当前活动的IO的事件，然后填充调用方传入的这个activechannels
   virtual Timestamp poll(int timeoutMs, ChannelList* activeChannels) = 0;
 
@@ -51,6 +52,7 @@ class Poller : noncopyable
 
   virtual bool hasChannel(Channel* channel) const;
 
+  //看名字是创建一个新的
   static Poller* newDefaultPoller(EventLoop* loop);
 
   void assertInLoopThread() const
