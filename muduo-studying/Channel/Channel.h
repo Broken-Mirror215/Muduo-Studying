@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-
+#include "../Socket/Socket.h"
 class Eventloop;
 
 using EventCallback=std::function<void()>;
@@ -17,6 +17,7 @@ public:
 
     int fd() const { return _fd; }
     int events() const { return _events; }
+
     void set_revents(int revt) { _revents= revt; }
 
     //这个是链条调用开始，设计的是fd->channel->evnetpoller->poller这个链
@@ -36,8 +37,8 @@ private:
     int _fd;
     Eventloop *_looper;
     int _events;//这里用来统计事件的
-    int _revents;//??
+    int _revents;//这里是内核里面实际告诉我发生了什么！
 
-    EventCallback readCallback_;
+    EventCallback readCallback_; 
     EventCallback writeCallback_;
 };

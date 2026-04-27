@@ -2,8 +2,7 @@
 #include <sys/epoll.h>
 #include <unordered_map>
 #include <vector>
-
-class Channel;
+#include "../Channel/Channel.h"
 class Eventloop;
 
 using Channellist=std::vector<Channel*>;
@@ -21,7 +20,7 @@ private:
 private:
     Eventloop* _looper;
     int _epollfd;
-    std::vector<struct epoll_event> _events;
+    std::vector<struct epoll_event> _events;//这是一个事件集合。
     std::unordered_map<int,Channel*> _channels;
 
 };

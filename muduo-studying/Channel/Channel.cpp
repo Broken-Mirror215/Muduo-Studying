@@ -13,6 +13,13 @@ _events(kNoneEvent),
 _revents(kNoneEvent)
 {}
 
+
+
+void Channel::update()
+{
+    _looper->updateChannel(this);
+}
+
 void Channel::enableReading(){
     _events |=kReadEvent;
     update();
@@ -38,11 +45,6 @@ void Channel::Noneall()
     _events = kNoneEvent;
     update();
 }
-
-void Channel::update(){
-    _looper->updateChannel(this);
-}
-
 
 void Channel::handlerEvent()
 {
