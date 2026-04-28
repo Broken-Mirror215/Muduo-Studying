@@ -16,6 +16,8 @@ void Eventloop::loop(){
         for (auto C:activechannels){
             C->handlerEvent();
         }
+        //把队列的东西放进来执行清除了
+        doqueue();
     }
     _looping=false;
 
@@ -27,6 +29,23 @@ void Eventloop::quit(){
 
 void Eventloop::updateChannel(Channel * c1){
     _epr->updateChannel(c1);
+}
+
+void Eventloop::removeChannel(Channel* c1){
+    _epr->removeChannel(c1);
+}
+
+void Eventloop::queueinLoop(functor cb){
+    _pendingfunctors.push_back(cb);   
+}
+
+void Eventloop::doqueue(){
+    std::vector<functor> functors;
+    functors.swap(_pendingfunctors);
+    for (const functor& functor : functors)
+    {
+        functor();
+    }
 }
 
 

@@ -27,10 +27,14 @@ public:
     void disableWriting();
     void Noneall();
 
+    void removeChannel();
+
     //event的掩码
     static const int kNoneEvent;
     static const int kReadEvent;
     static const int kWriteEvent;
+
+    
 private:
     void update();
 private:

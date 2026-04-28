@@ -14,6 +14,7 @@ public:
 
     void Epoll(int timeoutMs,Channellist& activechannels);
     void updateChannel(Channel * c1);
+    void removeChannel(Channel * c2);
 private:
     void fillActiveChannels(int numEvents,Channellist& activechannels);
 

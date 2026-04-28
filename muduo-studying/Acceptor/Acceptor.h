@@ -2,7 +2,7 @@
 #include <string>
 #include "../Eventloop/Eventloop.h"
 #include "../Socket/Socket.h"
-using newconnReadback=std::function<void(int)>;
+using newconnReadback=std::function<void(int)>;//逆天回调
 class Acceptor
 {
 public:

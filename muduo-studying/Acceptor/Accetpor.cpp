@@ -1,16 +1,20 @@
 #include "Acceptor.h"
+#include <cstdlib>
+#include <cstdio>
 Acceptor::Acceptor(Eventloop * loop,const char *ip,const uint32_t&port)
 :_loop(loop),
 sock(port,ip),
 acceptChannel(loop,sock._sockfd)
 {
-    sock.Bind();
+    if (sock.Bind()<0){
+        perror("bind error");
+        std::abort();
+    }
     Socket::Setnonblock(sock._sockfd);
 
     acceptChannel.SetReadCallBack([this]{
         handleRead();
     });
-
 }
 
 void Acceptor::connReadback (newconnReadback cb){
@@ -18,16 +22,25 @@ void Acceptor::connReadback (newconnReadback cb){
 }
 
 void Acceptor::listen(){
-    sock.Listen();
-    acceptChannel.enableReading();//这个不用设置fd的吗？
+    if (sock.Listen()<0){
+        perror("listen error");
+        std::abort();
+    }
+    acceptChannel.enableReading();
 }
 
 void Acceptor::handleRead(){
     Socket::Clientsocket client;
     int connfd=sock.Accept(client);
+    if (connfd<0){
+        std::cout<<"accpet error"<<std::endl;
+        return;
+    }
     Socket::Setnonblock(connfd);
 
-
-
+    //如果这个函数对象不是空的就可以进去了
+    if (back){
+        back(connfd);
+    }
 
 }

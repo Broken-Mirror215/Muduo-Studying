@@ -7,8 +7,8 @@ const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
 const int Channel::kWriteEvent = EPOLLOUT;
 
 Channel::Channel(Eventloop *looper,int fd)
-:_looper(looper),
-_fd(fd),
+:_fd(fd),
+_looper(looper),
 _events(kNoneEvent),
 _revents(kNoneEvent)
 {}
@@ -57,5 +57,9 @@ void Channel::handlerEvent()
     {
         writeCallback_();
     }
+}
+
+void Channel::removeChannel(){
+    _looper->removeChannel(this);
 }
 

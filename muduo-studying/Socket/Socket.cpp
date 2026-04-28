@@ -41,7 +41,7 @@ int Socket::ServerSocket::Listen()
     {
         return -1;
     }
-    return 0;
+    return n;
 }
 
 int Socket::ServerSocket::Accept(Socket::Clientsocket &client)
@@ -53,7 +53,7 @@ int Socket::ServerSocket::Accept(Socket::Clientsocket &client)
         return -1;
     }
     client._sockfd = n;
-    return 0;
+    return n;
 }
 
 Socket::ServerSocket::~ServerSocket()

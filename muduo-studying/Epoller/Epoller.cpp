@@ -1,11 +1,18 @@
 #include "Epoller.h"
 #include <cerrno>
 #include <iostream>
+#include <unistd.h>
+
 Epoller::Epoller(Eventloop * looper)
 :_looper(looper),
-_epollfd(::epoll_create(EPOLL_CLOEXEC)),
+_epollfd(::epoll_create1(EPOLL_CLOEXEC)),
 _events(1024)
 {}
+
+Epoller::~Epoller()
+{
+    ::close(_epollfd);
+}
 
 void Epoller::Epoll(int timeoutMs,Channellist& activeChannels){
     //阻塞
@@ -34,15 +41,16 @@ void Epoller::fillActiveChannels(int numEvents,Channellist& activechannels){
 
 void  Epoller::updateChannel(Channel * c1){
     int fd=c1->fd();
-    struct epoll_event ev;
+    struct epoll_event ev{};
     ev.data.ptr=c1;
     ev.events=c1->events();
 
-    if (_channels.find(fd) != _channels.end())
+    if (_channels.find(fd) == _channels.end())
     {
         if (::epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) < 0)
         {
             perror("epoll_ctl add error\n");
+            return;
         }
         _channels[fd] =c1;//用map记录，把fd变成事件
     }
@@ -53,5 +61,14 @@ void  Epoller::updateChannel(Channel * c1){
             std::cerr << "epoll_ctl mod error\n";
             std::abort();
         }
+    }
+}
+
+void Epoller::removeChannel(Channel * c1){
+    int fd=c1->fd();
+    int ret = ::epoll_ctl(_epollfd, EPOLL_CTL_DEL, fd, nullptr);
+    if (ret < 0)
+    {
+        std::cout << "epoll_ctl del error fd = " << fd << std::endl;
     }
 }
