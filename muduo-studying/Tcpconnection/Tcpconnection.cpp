@@ -15,17 +15,27 @@ void Tcpconnection::connestablished(){
     _channel.enableReading();
 }
 
+void Tcpconnection::setmessageback(MessageCallback cb){
+    _messageback = std::move(cb);
+}
+
 void Tcpconnection::handleread(){
     char buffer[1024];
     int n=::read(_connfd,buffer,sizeof(buffer)-1);
     if (n > 0)
     {
-        std::string msg(buffer, n);
-        std::cout << "client says: " << msg << std::flush;
-        if (msg.find("quit") != std::string::npos)
+        _inputbuffer.Append(buffer,n);
+        // std::cout << "client says: " << msg << std::flush;
+        // if (msg.find("quit") != std::string::npos)
+        // {
+        //     _loop->quit();
+        // }
+        if (_messageback)
         {
-            _loop->quit();
+            _messageback(shared_from_this(),&_inputbuffer);//这个是AI写的，我有点没看懂...
+            //把自己和消息一起给上层
         }
+
     }
     else if (n == 0)
     {
@@ -57,4 +67,8 @@ void Tcpconnection::handleclose(){
     if (_closeback){
         _closeback(fd);
     }
+}
+
+void Tcpconnection::send(const std::string& msg){
+    ::write(_connfd,msg.data(),msg.size());
 }

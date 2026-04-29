@@ -6,7 +6,7 @@ using newconnReadback=std::function<void(int)>;//逆天回调
 class Acceptor
 {
 public:
-    Acceptor(Eventloop * loop,const char *ip="127.0.0.1",const uint32_t&port=8080);
+    Acceptor(Eventloop * loop,const char *ip="127.0.0.1",const uint16_t&port=8080);
 
     void connReadback(newconnReadback cb);
 

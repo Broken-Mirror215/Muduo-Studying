@@ -1,7 +1,7 @@
 #include "Acceptor.h"
 #include <cstdlib>
 #include <cstdio>
-Acceptor::Acceptor(Eventloop * loop,const char *ip,const uint32_t&port)
+Acceptor::Acceptor(Eventloop * loop,const char *ip,const uint16_t&port)
 :_loop(loop),
 sock(port,ip),
 acceptChannel(loop,sock._sockfd)
