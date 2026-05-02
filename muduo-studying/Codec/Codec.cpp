@@ -1,6 +1,6 @@
 #include "Codec.h"
 #include <arpa/inet.h>
-explicit Codec::Codec(const StringCallback& cb)
+Codec::Codec(const StringCallback& cb)
 :_stringCallback(cb)
 {}
 
@@ -19,7 +19,7 @@ void Codec::OnMessage(const Connptr& conn,Buffer * buf){
             break;
         }
 
-        if (buf->readable()>Header+len){
+        if (buf->readable()<Header+len){
             //半包
             break;
         }

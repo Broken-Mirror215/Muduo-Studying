@@ -6,15 +6,22 @@
 #include "../Tcpconnection/Tcpconnection.h"
 #include <unordered_map>
 #include <memory>
-#include "Tcpserver/Tcpserver.h"
+#include "../Tcpserver/Tcpserver.h"
 #include "../Buffer/buffer.h"
+#include "../Game-Server/Game-server.h"
+#include "../Codec/Codec.h"
 int main(){
     Eventloop loop;
     Tcpserver server(&loop,"127.0.0.1",8080);
-    server.setmessageback([](const std::shared_ptr<Tcpconnection>& conn,Buffer* buf){
-        std::string msg=buf->ClearAll();
-        std::cout<<"client says "<<msg<<std::flush;
-        conn->send(msg);
+    gServer GameServer;
+
+    Codec codec([&GameServer](const std::shared_ptr<Tcpconnection> & conn,const std::string&msg) 
+    {
+        std::cout<<"business msg "<<msg<<std::endl;
+        GameServer.onMessage(conn,msg);
+    });
+    server.setmessageback([&codec](const std::shared_ptr<Tcpconnection>& conn,Buffer* buf){
+        codec.OnMessage(conn,buf);
     });
     server.start();
     loop.loop();
