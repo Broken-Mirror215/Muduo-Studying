@@ -9,7 +9,7 @@ public:
 
     bool Full();
 
-    void Join(std::shared_ptr<Player>&);//每次只添加一位玩家喵
+    void Join(const std::shared_ptr<Player>&);//每次只添加一位玩家喵
 
 private:
     int _id;

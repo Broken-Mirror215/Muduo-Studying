@@ -71,4 +71,5 @@ void Epoller::removeChannel(Channel * c1){
     {
         std::cout << "epoll_ctl del error fd = " << fd << std::endl;
     }
+    _channels.erase(fd);
 }

@@ -9,12 +9,12 @@ bool Room::Full(){
     return _c1!=nullptr&&_c2!=nullptr;
 }
 
-void Room::Join(std::shared_ptr<Player> & player)
+void Room::Join(const std::shared_ptr<Player> & player)
 {
     if (!_c1){
         _c1=player;
     }   
-    if (!_c2){
+    else if (!_c2){
         _c2=player;
     }
 }

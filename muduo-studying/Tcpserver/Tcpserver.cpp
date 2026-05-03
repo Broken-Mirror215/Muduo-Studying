@@ -36,6 +36,10 @@ void Tcpserver::newConnection(int connfd)
     });
     conn->setmessageback(_messageback);
     conn->connestablished();
+    if (_connback)
+    {
+        _connback(conn);
+    }
 
     std::cout << "new connection fd = " << connfd << std::endl;
 }
@@ -55,4 +59,8 @@ void Tcpserver::removeConnection(int fd)
 
 void Tcpserver::setmessageback(const MessageCallback& cb){
     _messageback=std::move(cb);
+}
+
+void Tcpserver::_setConnectionback(const Connectionback& cb){
+    _connback=std::move(cb);
 }

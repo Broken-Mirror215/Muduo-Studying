@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 #include "../Buffer/buffer.h"
+#include <cerrno>
+#include <unistd.h>
 class Tcpconnection:public std::enable_shared_from_this<Tcpconnection>
 {
 public:

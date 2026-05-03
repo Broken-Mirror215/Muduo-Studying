@@ -23,6 +23,10 @@ int main(){
     server.setmessageback([&codec](const std::shared_ptr<Tcpconnection>& conn,Buffer* buf){
         codec.OnMessage(conn,buf);
     });
+
+    server._setConnectionback([&GameServer](const std::shared_ptr<Tcpconnection>& conn){
+        GameServer.onConnect(conn);
+    });
     server.start();
     loop.loop();
 }
