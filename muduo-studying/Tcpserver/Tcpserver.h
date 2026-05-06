@@ -13,6 +13,7 @@ public:
     using TcpconnectionPtr = std::shared_ptr<Tcpconnection>;
     using MessageCallback=Tcpconnection::MessageCallback;
     using Connectionback=std::function<void(const TcpconnectionPtr&)>;
+    using CloseConnback=std::function<void (const TcpconnectionPtr&)>;
 
     Tcpserver(Eventloop* loop, const char *ip, uint16_t port);
     void start();
@@ -21,9 +22,11 @@ public:
 
     void _setConnectionback(const Connectionback& cb);
 
+    void _setCloseConnback(const CloseConnback& cb);
+
 private:
     void newConnection(int connfd);
-    void removeConnection(int fd);
+    void removeConnection(const TcpconnectionPtr & conn);
 
 private:
     Eventloop* _loop;
@@ -32,5 +35,6 @@ private:
     std::unordered_map<int, TcpconnectionPtr> _conns;
     MessageCallback _messageback;
     Connectionback _connback;
+    CloseConnback _closeback;
 
 };

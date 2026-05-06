@@ -27,6 +27,10 @@ int main(){
     server._setConnectionback([&GameServer](const std::shared_ptr<Tcpconnection>& conn){
         GameServer.onConnect(conn);
     });
+
+    server._setCloseConnback([&GameServer](const std::shared_ptr<Tcpconnection>& conn){
+        GameServer.onDisconnect(conn);
+    });
     server.start();
     loop.loop();
 }

@@ -11,7 +11,7 @@ class Tcpconnection:public std::enable_shared_from_this<Tcpconnection>
 {
 public:
     using Connptr=std::shared_ptr<Tcpconnection>;
-    using CloseCallback= std::function<void(int)>;
+    using CloseCallback= std::function<void(const Connptr &)>;//不用fd是因为业务层不好修改了。
     using MessageCallback=std::function<void(const Connptr&,Buffer*)>;
     Tcpconnection(Eventloop* loop,int connfd);
     
@@ -24,6 +24,8 @@ public:
     void setmessageback(MessageCallback cb);
 
     void send(const std::string& msg);
+
+    int fd();
 
 private:
     void handleread();

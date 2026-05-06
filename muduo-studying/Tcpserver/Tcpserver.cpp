@@ -31,26 +31,32 @@ void Tcpserver::newConnection(int connfd)
 
     _conns[connfd] = conn;
 
-    conn->setcloseCallback([this](int fd) {
-        this->removeConnection(fd);
+    conn->setcloseCallback([this](const TcpconnectionPtr& conn) {
+        if (_closeback){
+            _closeback(conn);
+        }
+        this->removeConnection(conn);
     });
+
     conn->setmessageback(_messageback);
     conn->connestablished();
+
     if (_connback)
     {
         _connback(conn);
     }
-
     std::cout << "new connection fd = " << connfd << std::endl;
 }
 
-void Tcpserver::removeConnection(int fd)
+void Tcpserver::removeConnection(const TcpconnectionPtr & conn)
 {
+    int fd=conn->fd();
     std::cout << "remove connection fd = " << fd << std::endl;
 
-    _loop->queueinLoop([this, fd] {
+    _loop->queueinLoop([this, fd,conn] {
         auto it = _conns.find(fd);
-        if (it != _conns.end())
+
+        if (it != _conns.end()&&it->second==conn)
         {
             _conns.erase(it);
         }
@@ -63,4 +69,8 @@ void Tcpserver::setmessageback(const MessageCallback& cb){
 
 void Tcpserver::_setConnectionback(const Connectionback& cb){
     _connback=std::move(cb);
+}
+
+void Tcpserver::_setCloseConnback(const CloseConnback&cb){
+    _closeback=std::move(cb);
 }

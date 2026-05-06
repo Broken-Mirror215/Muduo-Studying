@@ -63,12 +63,17 @@ void Tcpconnection::handleclose(){
     _channel.removeChannel();
     //关闭fd
     ::close(_connfd);
-    _connfd=-1;
     if (_closeback){
-        _closeback(fd);
+        _closeback(shared_from_this());
     }
+
+       _connfd=-1;
 }
 
 void Tcpconnection::send(const std::string& msg){
     ::write(_connfd,msg.data(),msg.size());
+}
+
+int Tcpconnection::fd(){
+    return _connfd;
 }

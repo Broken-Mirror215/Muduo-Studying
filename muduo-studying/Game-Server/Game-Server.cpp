@@ -42,23 +42,33 @@ void gServer::handlematch(const Connptr & conn){
         return ;
     }
 
+    //设计了防重复match的保护。
+    if (_waitingConn.find(key)!=_waitingConn.end()){
+        conn->send("player has already match");
+        return ;
+    }
+
     //如果队列没人，就进队然后等
-    if (_mathchqueue.empty()){
-        _mathchqueue.push(currentplayer);
+    if (_matchqueue.empty()){
+        _matchqueue.push(currentplayer);
+        _waitingConn.insert(key);
         std::cout<<"player "<<currentplayer->ID()<<" waiting in mathch"<<std::endl;
         conn->send("waiting");
         return ;
     }
 
     //如果队伍有人，就取出来去匹配。
-    auto nextplayer=_mathchqueue.front();
-    _mathchqueue.pop();
-     //AI提示到考虑不要自匹配。
+    auto nextplayer=_matchqueue.front();
+    _matchqueue.pop();
+    //AI提示到考虑不要自匹配。
+    _waitingConn.erase(nextplayer->CON().get());
+    _waitingConn.erase(currentplayer->CON().get());
     if (nextplayer == currentplayer)
     {
         conn->send("err not math self");
         return;
     }
+    
 
     int roomid=_nextRoomid++;
     auto room=std::make_shared<Room>(roomid);
@@ -118,4 +128,27 @@ void gServer::handleroommsg(const Connptr& conn,const std::string&msg){
 
     //发给另一个玩家
     room->Forward(player,realmsg);
+}
+
+void gServer::onDisconnect(const Connptr & conn){
+    Tcpconnection * key=conn.get();
+    auto it =_players.find(key);
+
+    auto player=it->second;
+    std::cout<<"the disconnect id is "<<player->ID()<<std::endl;
+    
+    _players.erase(key);
+    _waitingConn.erase(key);
+    _connRooms.erase(key);
+
+    std::queue<std::shared_ptr<Player>> newQueue;
+    while (!_matchqueue.empty()) {
+        auto p = _matchqueue.front();
+        _matchqueue.pop();
+
+        if (p != player) {
+            newQueue.push(p);
+        }
+    }
+    _matchqueue.swap(newQueue);
 }

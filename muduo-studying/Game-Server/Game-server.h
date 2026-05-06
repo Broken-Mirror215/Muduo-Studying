@@ -5,6 +5,7 @@
 #include "../Player/Player.h"
 #include <unordered_map>
 #include "../Room/Room.h"
+#include <unordered_set>
 using Connptr=std::shared_ptr<Tcpconnection>;
 class gServer
 {
@@ -16,6 +17,8 @@ public:
 
     //当Codec解码之后调用
     void onMessage(const Connptr&,const std::string& msg);
+
+    void onDisconnect(const Connptr & conn);
 
 private:
     void handlematch(const Connptr &);
@@ -29,7 +32,7 @@ private:
     int _nextRoomid;
     
     //匹配等待队列
-    std::queue<std::shared_ptr<Player>> _mathchqueue;
+    std::queue<std::shared_ptr<Player>> _matchqueue;
 
     //一个连接对应一个player
     std::unordered_map<Tcpconnection*,std::shared_ptr<Player>> _players;
@@ -38,4 +41,7 @@ private:
 
     //一个连接当前的所在房间
     std::unordered_map<Tcpconnection*,int> _connRooms;
+
+    //防止自己连接！
+    std::unordered_set<Tcpconnection*> _waitingConn;
 };
