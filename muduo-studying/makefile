@@ -48,4 +48,4 @@ print:
 	@echo "SRCS = $(SRCS)"
 	@echo "OBJS = $(OBJS)"
 
--include $(DEPS)`
+-include $(DEPS)

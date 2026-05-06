@@ -20,6 +20,8 @@ public:
 private:
     void handlematch(const Connptr &);
 
+    void handleroommsg(const Connptr&,const std::string & msg);
+
 
 private:
 

@@ -21,7 +21,7 @@ void gServer::onMessage(const Connptr& conn,const std::string& msg){
         handlematch(conn);
     }
     else{
-        conn->send("Invaild msg");
+        handleroommsg(conn,msg);
     }
 }
 
@@ -83,4 +83,39 @@ void gServer::handlematch(const Connptr & conn){
         "p2 id :"+std::to_string(nextplayer->ID())
         );
 
+}
+
+void gServer::handleroommsg(const Connptr& conn,const std::string&msg){
+    Tcpconnection* key=conn.get();
+
+    //先找到连接这个房间的玩家
+    auto p1=_players.find(key);
+    if (p1==_players.end()){
+        conn->send("not found the player");
+        return;
+    }
+    auto player=p1->second;
+
+    //这是看玩家是不是在某个房间里面？
+    auto rit=_connRooms.find(key);
+    if (rit==_connRooms.end()){
+        conn->send("the player not find in the room");
+        return;
+    }
+
+    int roomid=rit->second;
+    auto roomIT=_Rooms.find(roomid);
+    if (roomIT==_Rooms.end()){
+        conn->send("room not find");
+        return;
+    }
+
+    auto room=roomIT->second;
+
+    //建议包装转发消息...
+    std::string realmsg = "PLAYER_MSG from=" + std::to_string(player->ID()) + " " + msg;
+    std::cout << "room " << roomid << " forward msg: " << realmsg << std::endl;
+
+    //发给另一个玩家
+    room->Forward(player,realmsg);
 }
