@@ -15,11 +15,14 @@ int main(){
     Tcpserver server(&loop,"127.0.0.1",8080);
     gServer GameServer;
 
+    //下面codec在用的时候会直接顺带用了这个
     Codec codec([&GameServer](const std::shared_ptr<Tcpconnection> & conn,const std::string&msg) 
     {
         std::cout<<"business msg "<<msg<<std::endl;
         GameServer.onMessage(conn,msg);
     });
+
+    //这个server用了tcpconnection里面的函数体。server先设置回调，然后再把server的回调给tcpconnection
     server.setmessageback([&codec](const std::shared_ptr<Tcpconnection>& conn,Buffer* buf){
         codec.OnMessage(conn,buf);
     });

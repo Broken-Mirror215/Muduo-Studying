@@ -22,7 +22,7 @@ void Epoller::Epoll(int timeoutMs,Channellist& activeChannels){
     {
         fillActiveChannels(numEvents, activeChannels);
 
-        //扩容，这里后面改一个深拷贝扩容
+        //扩容,这里需要深拷贝扩容吗？
         if (numEvents == static_cast<int>(_events.size()))
         {
             _events.resize(_events.size() * 2);

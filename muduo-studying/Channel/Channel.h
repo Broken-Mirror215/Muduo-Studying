@@ -2,7 +2,7 @@
 #include <functional>
 #include "../Socket/Socket.h"
 class Eventloop;
-
+//回调函数通用模板
 using EventCallback=std::function<void()>;
 class Channel
 {

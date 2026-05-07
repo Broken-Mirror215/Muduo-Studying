@@ -5,7 +5,7 @@ Tcpconnection::Tcpconnection(Eventloop* loop,int connfd)
 _connfd(connfd),
 _channel(loop,connfd)//这里不直接传channel的原因是防止拷贝，这样多个fd表被拷贝走了。
 {
-    _channel.SetReadCallBack([this]{
+    _channel.SetReadCallBack([this](){
         handleread();//塞进channel的readback里面。
     });
 }
@@ -32,8 +32,8 @@ void Tcpconnection::handleread(){
         // }
         if (_messageback)
         {
+            
             _messageback(shared_from_this(),&_inputbuffer);//这个是AI写的，我有点没看懂...
-            //把自己和消息一起给上层
         }
 
     }

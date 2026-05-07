@@ -34,7 +34,11 @@ private:
 
     std::unordered_map<int, TcpconnectionPtr> _conns;
     MessageCallback _messageback;
+    //晚点需要注册的消息回调
     Connectionback _connback;
+    //晚点要注册的关闭回调
     CloseConnback _closeback;
 
+
+    
 };

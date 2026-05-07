@@ -8,7 +8,7 @@ class Acceptor
 public:
     Acceptor(Eventloop * loop,const char *ip="127.0.0.1",const uint16_t&port=8080);
 
-    void connReadback(newconnReadback cb);
+    void setconnReadback(newconnReadback cb);
 
 
     void listen();
@@ -19,7 +19,7 @@ public:
 private:
 
     Eventloop * _loop;
-    newconnReadback back;
+    newconnReadback _ConnReadback;
     Socket::ServerSocket sock;
     //fd要利用管道链路注册
     Channel acceptChannel;

@@ -10,6 +10,7 @@ void gServer::onConnect(const Connptr & conn){
     Tcpconnection* key=conn.get();
     auto p1=std::make_shared<Player>(_nextplayerid++,conn);
 
+    //利用玩家的fd创建一个玩家
     _players[key]=p1;
     std::cout<<"new player id is : "<<p1->ID()<<std::endl;
     conn->send("login success id is " + std::to_string(p1->ID()));

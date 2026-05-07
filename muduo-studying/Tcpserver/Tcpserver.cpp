@@ -7,7 +7,7 @@ Tcpserver::Tcpserver(Eventloop* loop, const char*ip, uint16_t port)
 :_loop(loop),
 _acceptor(loop, ip, port)
 {
-    _acceptor.connReadback([this](int connfd) {
+    _acceptor.setconnReadback([this](int connfd) {
         this->newConnection(connfd);
     });
 }
@@ -38,7 +38,7 @@ void Tcpserver::newConnection(int connfd)
         this->removeConnection(conn);
     });
 
-    conn->setmessageback(_messageback);
+    conn->setmessageback(_messageback);//这是tcpserver把自己的_messageback转给了tcpconn的_messageback
     conn->connestablished();
 
     if (_connback)

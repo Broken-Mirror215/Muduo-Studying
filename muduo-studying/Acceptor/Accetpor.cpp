@@ -12,13 +12,14 @@ acceptChannel(loop,sock._sockfd)
     }
     Socket::Setnonblock(sock._sockfd);
 
-    acceptChannel.SetReadCallBack([this]{
-        handleRead();
+    //accpetor设置了读的fd
+    acceptChannel.SetReadCallBack([this](){
+            handleRead();
     });
 }
 
-void Acceptor::connReadback (newconnReadback cb){
-    back=std::move(cb);
+void Acceptor::setconnReadback (newconnReadback cb){
+    _ConnReadback=std::move(cb);
 }
 
 void Acceptor::listen(){
@@ -39,8 +40,8 @@ void Acceptor::handleRead(){
     Socket::Setnonblock(connfd);
 
     //如果这个函数对象不是空的就可以进去了
-    if (back){
-        back(connfd);
+    if (_ConnReadback){
+        _ConnReadback(connfd);
     }
 
 }
